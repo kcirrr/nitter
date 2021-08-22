@@ -1,4 +1,4 @@
-FROM zedeus/nitter:latest as builder
+FROM zedeus/nitter:cf47c1b8ad3affa43881ea661c8a5a11d206dfa0 as builder
 
 
 FROM alpine:3.14
