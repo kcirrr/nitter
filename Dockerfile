@@ -22,7 +22,6 @@ WORKDIR /src/
 RUN groupadd -r "${USER}" --gid="${GID}" \
     && useradd --no-log-init -r -g "${GID}" --uid="${UID}" "${USER}" \
     && apk --no-cache add pcre-dev sqlite-dev
-
 COPY --chown="${USER}" --from=builder /src/nitter/nitter /src/nitter/nitter.conf ./
 COPY --chown="${USER}" --from=builder /src/nitter/public ./public
 
