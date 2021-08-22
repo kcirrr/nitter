@@ -1,0 +1,2 @@
+ignored:
+  - DL3008 # Ignore warning about version pinning
