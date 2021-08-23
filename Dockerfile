@@ -46,8 +46,7 @@ RUN nimble build -y -d:release --passC:"-flto" --passL:"-flto" \
     && nimble scss
 
 
-FROM alpine:3.14
-EXPOSE 8080
+FROM ubuntu:20.04
 
 ENV USER nitter
 ENV UID 32784
@@ -56,22 +55,20 @@ ENV GID 32784
 WORKDIR /src/
 
 RUN mkdir -p /src \
-    && addgroup \
-    --gid "$GID" \
-    "$USER" \
-    && adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "$(pwd)" \
-    --ingroup "$USER" \
-    --no-create-home \
-    --uid "$UID" \
-    "$USER" \
-    && apk --no-cache add pcre-dev sqlite-dev bash
+    && groupadd -r "${USER}" --gid="${GID}" \
+    && useradd --no-log-init -r -g "${GID}" --uid="${UID}" "${USER}" \
+    && apt-get update \
+    && apt-get install --no-install-recommends --yes \
+    libsqlite3-dev \
+    libpcre3 \
+    libpcre3-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --chown="${USER}" --from=builder /src/nitter/nitter /src/nitter/nitter.conf ./
 COPY --chown="${USER}" --from=builder /src/nitter/public ./public
 
 USER "${USER}"
+EXPOSE 8080
 
 CMD ["./nitter"]
