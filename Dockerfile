@@ -62,6 +62,7 @@ RUN mkdir -p /src \
     libsqlite3-dev \
     libpcre3 \
     libpcre3-dev \
+    libssl-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
