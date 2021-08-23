@@ -3,8 +3,6 @@ FROM ubuntu:20.04 as builder
 ENV PATH=~/.nimble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV DEBIAN_FRONTEND noninteractive
 
-WORKDIR /src/nitter/
-
 RUN apt-get update \
     && apt-get install --no-install-recommends --yes \
     g++ \
@@ -24,12 +22,14 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && c_rehash
 
+WORKDIR /nim/
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN mkdir -p /nim /src/nitter/ \
     && curl -sL https://github.com/zedeus/nitter/archive/master.tar.gz \
     | tar -xzC /src/nitter/ --strip-components=1 \
     && curl -sL "https://nim-lang.org/download/nim-1.4.8.tar.xz" \
     | tar xJ --strip-components=1 -C /nim \
-    && cd /nim \
     && sh build.sh \
     && rm -r c_code tests \
     && ln -s /nim/bin/nim /bin/nim \
@@ -37,9 +37,11 @@ RUN mkdir -p /nim /src/nitter/ \
     && ./koch tools \
     && ln -s /nim/bin/nimble /bin/nimble \
     && ln -s /nim/bin/nimsuggest /bin/nimsuggest \
-    && ln -s /nim/bin/testament /bin/testament \
-    && cd /src/nitter \
-    && nimble build -y -d:release --passC:"-flto" --passL:"-flto" \
+    && ln -s /nim/bin/testament /bin/testament
+
+WORKDIR /src/nitter/
+
+RUN nimble build -y -d:release --passC:"-flto" --passL:"-flto" \
     && strip -s nitter \
     && nimble scss
 
