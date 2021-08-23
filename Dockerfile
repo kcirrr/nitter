@@ -55,7 +55,8 @@ ENV GID 32784
 
 WORKDIR /src/
 
-RUN addgroup \
+RUN mkdir -p /src \
+    addgroup \
     --gid "$GID" \
     "$USER" \
     && adduser \
