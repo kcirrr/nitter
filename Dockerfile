@@ -63,6 +63,7 @@ RUN mkdir -p /src \
     libpcre3 \
     libpcre3-dev \
     libssl-dev \
+    ca-certificates \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
