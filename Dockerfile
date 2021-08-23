@@ -46,7 +46,7 @@ RUN nimble build -y -d:release --passC:"-flto" --passL:"-flto" \
     && nimble scss
 
 
-FROM ubuntu:20.04
+FROM redis:6.2-buster
 
 ENV USER nitter
 ENV UID 32784
@@ -66,10 +66,10 @@ RUN mkdir -p /src \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --chown="${USER}" --from=builder /src/nitter/nitter /src/nitter/nitter.conf ./
+COPY --chown="${USER}" --from=builder /src/nitter/nitter /src/nitter/start.sh /src/nitter/nitter.conf ./
 COPY --chown="${USER}" --from=builder /src/nitter/public ./public
 
 USER "${USER}"
 EXPOSE 8080
 
-CMD ["./nitter"]
+CMD ["./start.sh"]
